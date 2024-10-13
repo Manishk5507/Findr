@@ -1,12 +1,12 @@
-import './App.css'
+import "./App.css";
+import LandingPage from "./Components/LandingPage/LandingPage.jsx";
 
 function App() {
-
   return (
-   <>
-   <h1>Findr</h1>
-   </>
-  )
+    <div>
+      <LandingPage />
+    </div>
+  );
 }
 
-export default App
+export default App;
