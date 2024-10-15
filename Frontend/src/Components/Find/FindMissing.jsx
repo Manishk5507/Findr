@@ -1,187 +1,247 @@
 import { useState } from "react";
 
 const FindMissing = () => {
-  const [searchData, setSearchData] = useState({
-    name: "",
-    description: "",
+  const [formData, setFormData] = useState({
+    searcherName: "",
     contactInfo: "",
-    dateMissing: "",
-    preferredContact: "",
-    urgentConfirmation: false,
+    relationship: "",
+    fullName: "",
+    age: "",
+    gender: "",
+    distinctiveMarks: "",
+    lastSeenLocation: "",
+    additionalDetails: "",
+    photos: null,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setSearchData({
-      ...searchData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value, files } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here, e.g., sending data to the server
-    console.log(searchData);
+    // Handle form submission (e.g., send data to server)
+    console.log(formData);
   };
 
   return (
-    <div className="bg-white min-h-screen flex items-center justify-center">
-      <div className="w-full bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Find The Missing Person
-        </h1>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name of Missing Person */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Name of Missing Person (required)
+    <div className="mt-8 mb-8">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg space-y-6 sm:p-8"
+      >
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          Find Missing Person
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="form-group">
+            <label
+              htmlFor="fullName"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Full Name of the Missing Person
             </label>
             <input
-              type="text"
-              name="name"
-              placeholder="Enter the name of the missing person"
-              value={searchData.name}
+              name="fullName"
+              id="fullName"
+              placeholder="Full Name of the Missing Person"
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="relationship"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Relationship to Missing Person
+            </label>
+            <input
+              name="relationship"
+              id="relationship"
+              placeholder="Relationship to Missing Person"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description (required)
+          <div className="form-group">
+            <label
+              htmlFor="age"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Age
+            </label>
+            <input
+              name="age"
+              id="age"
+              type="number"
+              placeholder="Age"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="gender"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Gender
+            </label>
+            <select
+              name="gender"
+              id="gender"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label
+              htmlFor="height"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Height
+            </label>
+            <input
+              name="height"
+              id="height"
+              placeholder='Height (e.g., 5&#39;7")'
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="weight"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Weight
+            </label>
+            <input
+              name="weight"
+              id="weight"
+              placeholder="Weight (e.g., 70 kg)"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="hairColor"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Hair Color
+            </label>
+            <input
+              name="hairColor"
+              id="hairColor"
+              placeholder="Hair Color"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group">
+            <label
+              htmlFor="eyeColor"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Eye Color
+            </label>
+            <input
+              name="eyeColor"
+              id="eyeColor"
+              placeholder="Eye Color"
+              onChange={handleChange}
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+
+          <div className="form-group">
+            <label
+              htmlFor="lastSeenDate"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              When Found?
+            </label>
+            <input
+              name="lastSeenDate"
+              id="lastSeenDate"
+              type="date"
+              onChange={handleChange}
+              required
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+
+          <div className="form-group">
+            <label
+              htmlFor="lastSeenLocation"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Last Known Location
+            </label>
+            <input
+              name="lastSeenLocation"
+              id="lastSeenLocation"
+              placeholder="Last Known Location"
+              onChange={handleChange}
+              required
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
+          </div>
+          <div className="form-group sm:col-span-2">
+            <label
+              htmlFor="additionalDetails"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
+            >
+              Additional Details
             </label>
             <textarea
-              name="description"
-              rows="4"
-              placeholder="Please include details such as age, height, and any distinguishing features"
-              value={searchData.description}
+              name="additionalDetails"
+              id="additionalDetails"
+              placeholder="Additional Details"
               onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
+              className="input h-8 w-full px-2 py-1 border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            ></textarea>
           </div>
-
-          {/* Contact Information */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Your Contact Information (required)
-            </label>
-            <input
-              type="text"
-              name="contactInfo"
-              placeholder="Your email or phone number"
-              value={searchData.contactInfo}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          {/* Date Missing */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Date Missing
-            </label>
-            <input
-              type="date"
-              name="dateMissing"
-              value={searchData.dateMissing}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            />
-          </div>
-
-          {/* Preferred Method of Contact */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Your preferred method of contact
-            </label>
-            <div className="mt-2 space-y-2">
-              <div className="flex items-center">
-                <input
-                  id="emailPreferred"
-                  name="preferredContact"
-                  type="radio"
-                  value="email"
-                  onChange={handleChange}
-                  className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                />
-                <label
-                  htmlFor="emailPreferred"
-                  className="ml-3 block text-sm text-gray-700"
-                >
-                  Email
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="phonePreferred"
-                  name="preferredContact"
-                  type="radio"
-                  value="phone"
-                  onChange={handleChange}
-                  className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                />
-                <label
-                  htmlFor="phonePreferred"
-                  className="ml-3 block text-sm text-gray-700"
-                >
-                  Phone
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="dontMind"
-                  name="preferredContact"
-                  type="radio"
-                  value="noPreference"
-                  onChange={handleChange}
-                  className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                />
-                <label
-                  htmlFor="dontMind"
-                  className="ml-3 block text-sm text-gray-700"
-                >
-                  I don&apos;t mind
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Urgent Police Action Confirmation */}
-          <div className="flex items-center">
-            <input
-              id="urgentConfirmation"
-              name="urgentConfirmation"
-              type="checkbox"
-              checked={searchData.urgentConfirmation}
-              onChange={handleChange}
-              required
-              className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-            />
+          <div className="form-group sm:col-span-2">
             <label
-              htmlFor="urgentConfirmation"
-              className="ml-3 block text-sm text-gray-700"
+              htmlFor="photos"
+              className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
-              I confirm that this form is not being used to report something
-              that requires urgent Police action
+              Upload Photo
             </label>
+            <input
+              name="photos"
+              id="photos"
+              type="file"
+              accept="image/*"
+              onChange={handleChange}
+              required
+              className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
+            />
           </div>
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              Search
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div className=" text-center ">
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-8 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-70  "
+          >
+            Submit
+          </button>
+        </div>{" "}
+      </form>
     </div>
   );
 };

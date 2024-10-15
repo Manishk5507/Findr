@@ -1,9 +1,21 @@
 import { useState } from "react";
-import LOGO from "../assets/Logo.jpeg";
+// import LOGO from "../assets/Logo.jpeg";
 import { NavLink } from "react-router-dom";
+import ABSENSLOGO from "../assets/absens.png";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Perform logout logic here
+    setDropdownOpen(false); // Close the dropdown after logout
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -15,11 +27,14 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 transition-all duration-300 ease-in-out">
             {/* Logo Section */}
-            <NavLink to="/" className="flex items-center transition-all duration-300 ease-in-out">
+            <NavLink
+              to="/"
+              className="flex items-center transition-all duration-300 ease-in-out"
+            >
               <img
-                src={LOGO}
+                src={ABSENSLOGO}
                 alt="Logo"
-                className="h-32 w-auto transition-transform duration-300 ease-in-out transform hover:scale-110"
+                className="h-32 mb-4 w-auto transition-transform duration-300 ease-in-out transform hover:scale-110"
               />
               <span className="text-xl font-semibold text-gray-800 ml-2 transition-all duration-300 ease-in-out"></span>
             </NavLink>
@@ -54,7 +69,9 @@ const Navbar = () => {
             <NavLink
               to="/aboutUs"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               ABOUT US
@@ -62,7 +79,9 @@ const Navbar = () => {
             <NavLink
               to="/cases"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               CASES
@@ -70,7 +89,9 @@ const Navbar = () => {
             <NavLink
               to="/report-the-missing"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               REPORT THE MISSING
@@ -78,7 +99,9 @@ const Navbar = () => {
             <NavLink
               to="/find-the-missing"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               FIND THE MISSING
@@ -86,7 +109,9 @@ const Navbar = () => {
             <NavLink
               to="/rules"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               RULES & REGULATIONS
@@ -94,12 +119,11 @@ const Navbar = () => {
           </div>
 
           {/* Login Section */}
-          <div className="hidden md:flex items-center transition-all duration-300 ease-in-out">
-            <NavLink
-              to="/register"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
-              }
+          {/* Login Section */}
+          <div className="hidden md:flex items-center relative">
+            <button
+              onClick={toggleDropdown}
+              className="text-gray-800 hover:text-blue-600 focus:outline-none transition-all duration-300 ease-in-out"
             >
               <span className="sr-only">Log in</span>
               <svg
@@ -116,14 +140,49 @@ const Navbar = () => {
                   d="M5.121 17.804A12.042 12.042 0 0112 14c2.076 0 4.044.519 5.879 1.449m1.998 2.347A11.961 11.961 0 0012 22a11.961 11.961 0 01-7.879-2.8M15 11a3 3 0 10-6 0 3 3 0 006 0z"
                 />
               </svg>
-            </NavLink>
+            </button>
+
+            {/* Dropdown Menu */}
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-40 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                <div className="py-2">
+                  {isLoggedIn ? (
+                    <>
+                      <NavLink
+                        to="/profile"
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                        onClick={() => setDropdownOpen(false)} // Close dropdown on click
+                      >
+                        My Profile
+                      </NavLink>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      >
+                        Log Out
+                      </button>
+                    </>
+                  ) : (
+                    <NavLink
+                      to="/register"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                      onClick={() => setDropdownOpen(false)} // Close dropdown on click
+                    >
+                      LOGIN/SIGNUP
+                    </NavLink>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Sidebar for Mobile */}
       <div
-        className={`fixed inset-0 bg-gray-800 bg-opacity-75 z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:hidden`}
+        className={`fixed inset-0 bg-gray-800 bg-opacity-75 z-50 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out md:hidden`}
       >
         <div className="bg-white w-64 h-full shadow-lg transition-all duration-300 ease-in-out">
           <div className="flex justify-between p-4">
@@ -155,7 +214,9 @@ const Navbar = () => {
             <NavLink
               to="/aboutUs"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               ABOUT US
@@ -163,7 +224,9 @@ const Navbar = () => {
             <NavLink
               to="/report-the-missing"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               REPORT THE MISSING
@@ -171,7 +234,9 @@ const Navbar = () => {
             <NavLink
               to="/find-the-missing"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               FIND THE MISSING
@@ -179,19 +244,51 @@ const Navbar = () => {
             <NavLink
               to="/rules"
               className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
+                isActive
+                  ? "text-blue-600 font-bold transition-transform transform scale-105"
+                  : "text-gray-800"
               }
             >
               RULES & REGULATIONS
             </NavLink>
-            <NavLink
-              to="/register"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-bold transition-transform transform scale-105" : "text-gray-800"
-              }
-            >
-              Log In
-            </NavLink>
+            {isLoggedIn ? (
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-bold transition-transform transform scale-105"
+                    : "text-gray-800"
+                }
+              >
+                PROFILE
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/register"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-bold transition-transform transform scale-105"
+                    : "text-gray-800"
+                }
+              >
+                REGISTER
+              </NavLink>
+            )}
+            {isLoggedIn ? (
+              <NavLink
+                to="/"
+                onClick={handleLogout}
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-blue-600 font-bold transition-transform transform scale-105"
+                    : "text-gray-800"
+                }
+              >
+                LOGOUT
+              </NavLink>
+            ) : (
+              ""
+            )}
           </nav>
         </div>
       </div>
