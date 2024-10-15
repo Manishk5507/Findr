@@ -1,8 +1,11 @@
+import Signup from "./Signup"
 
 
 function Register() {
   return (
-    <div>Register</div>
+    <div>
+      <Signup/>
+    </div>
   )
 }
 
