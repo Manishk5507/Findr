@@ -1,20 +1,33 @@
 import { useState } from "react";
 // import LOGO from "../assets/Logo.jpeg";
-import { NavLink } from "react-router-dom";
+import { NavLink,useNavigate  } from "react-router-dom";
 import ABSENSLOGO from "../assets/absens.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from '../context/AuthContext.jsx'; 
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const { user,logout } = useAuth();
+
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false); // Perform logout logic here
-    setDropdownOpen(false); // Close the dropdown after logout
+    // setIsLoggedIn(false);
+    setDropdownOpen(false);
+    logout();
+    toast.success("User Logout successfully!", {
+      position: "bottom-right",
+      autoClose: 1000,
+    });
+    navigate("/");
   };
 
   const toggleSidebar = () => {
@@ -27,6 +40,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 transition-all duration-300 ease-in-out">
             {/* Logo Section */}
+            <ToastContainer /> {/* Add this line here */}
             <NavLink
               to="/"
               className="flex items-center transition-all duration-300 ease-in-out"
@@ -119,7 +133,6 @@ const Navbar = () => {
           </div>
 
           {/* Login Section */}
-          {/* Login Section */}
           <div className="hidden md:flex items-center relative">
             <button
               onClick={toggleDropdown}
@@ -146,7 +159,7 @@ const Navbar = () => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-40 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                 <div className="py-2">
-                  {isLoggedIn ? (
+                  {user!==null ? (
                     <>
                       <NavLink
                         to="/profile"
@@ -251,7 +264,7 @@ const Navbar = () => {
             >
               RULES & REGULATIONS
             </NavLink>
-            {isLoggedIn ? (
+            {user!==null ? (
               <NavLink
                 to="/profile"
                 className={({ isActive }) =>
@@ -274,7 +287,7 @@ const Navbar = () => {
                 REGISTER
               </NavLink>
             )}
-            {isLoggedIn ? (
+            {user!==null ? (
               <NavLink
                 to="/"
                 onClick={handleLogout}

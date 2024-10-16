@@ -1,9 +1,12 @@
 // import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useState, useRef } from "react";
+import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function Profile() {
   const [photo, setPhoto] = useState("https://via.placeholder.com/150"); // Replace with the initial image URL
   const fileInputRef = useRef(null);
+
+  const { user } = useAuth();
 
   // Function to handle file selection
   const handleFileChange = (event) => {
@@ -42,20 +45,42 @@ export default function Profile() {
                   Username
                 </label>
                 <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                  <div className="flex rounded-md shadow-sm ring-1 ring-inset sm:max-w-md">
                     <input
                       id="username"
                       name="username"
                       type="text"
-                      placeholder="janesmith"
-                      autoComplete="username"
-                      className="block flex-1 border-0 bg-transparent py-1.5 px-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      placeholder="Your Username"
+                      value={user===null ? "NA" : user.username}
+                      readOnly
+                      className="block flex-1 border-0 bg-transparent py-1.5 px-2 text-gray-900 focus:ring-0 sm:text-sm sm:leading-6 "
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Email
+                </label>
+                <div className="mt-2">
+                  <div className="flex border-none rounded-md shadow-sm ring-1 sm:max-w-md">
+                    <input
+                      id="email"
+                      name="email"
+                      type="text"
+                      placeholder="Your Email"
+                      value={user===null ? "NA" : user.email}
+                      readOnly
+                      className="block border-none flex-1 border-0 bg-transparent py-1.5 px-2 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="border p-4 rounded-md w-64 mx-auto">
+              <div className="border p-4 md:-mt-32 rounded-md w-64 mx-auto">
                 <div className="flex justify-center mb-4">
                   <img
                     src={photo}
@@ -88,26 +113,6 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="col-span-full md:col-span-3">
-                <label
-                  htmlFor="about"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  About
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="about"
-                    name="about"
-                    rows={3}
-                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue={""}
-                  />
-                </div>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Write a few sentences about yourself.
-                </p>
-              </div>
 
               {/* <div className="col-span-full">
               <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">

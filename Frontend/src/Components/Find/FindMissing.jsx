@@ -40,14 +40,14 @@ const FindMissing = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="form-group">
             <label
-              htmlFor="fullName"
+              htmlFor="name"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
               Full Name of the Missing Person
             </label>
             <input
-              name="fullName"
-              id="fullName"
+              name="name"
+              id="name"
               placeholder="Full Name of the Missing Person"
               onChange={handleChange}
               required
@@ -56,14 +56,14 @@ const FindMissing = () => {
           </div>
           <div className="form-group">
             <label
-              htmlFor="relationship"
+              htmlFor="relationshipWithMissing"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
               Relationship to Missing Person
             </label>
             <input
-              name="relationship"
-              id="relationship"
+              name="relationshipWithMissing"
+              id="relationshipWithMissing"
               placeholder="Relationship to Missing Person"
               onChange={handleChange}
               className="input block py-2.5 px-2 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none"
@@ -172,7 +172,7 @@ const FindMissing = () => {
               htmlFor="lastSeenDate"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
-              When Found?
+              Last Seen Date
             </label>
             <input
               name="lastSeenDate"
@@ -189,7 +189,7 @@ const FindMissing = () => {
               htmlFor="lastSeenLocation"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
-              Last Known Location
+              Last Seen Location
             </label>
             <input
               name="lastSeenLocation"
