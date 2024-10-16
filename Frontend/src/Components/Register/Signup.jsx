@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const Signup = () => {
     password: "",
     rememberMe: false,
   });
+
+  const { signup } = useAuth();
 
   const [errors, setErrors] = useState({});
   const URL = import.meta.env.VITE_BACKEND_URL;
@@ -45,12 +48,17 @@ const Signup = () => {
 
     try {
       const response = await axios.post(`${URL}/api/users/register`, formData);
-      console.log(response.data);
+      const data = await response.data;
+      // console.log(response.data);
       toast.success("Signup successful! Redirecting to the home page...", {
         position: "bottom-right", // Direct string instead of toast.POSITION
         autoClose: 3000,
       });
-      // navigate("/loader"); // Redirect to loader page
+      signup(
+        data.user.username,
+        data.user.email,
+        data.user._id
+      ); // Call signup function from AuthContext
       setTimeout(() => navigate("/"), 2000); // Redirect after 3 seconds
     } catch (error) {
       const message =
