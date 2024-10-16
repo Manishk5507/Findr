@@ -102,7 +102,7 @@ const ReportMissing = () => {
               htmlFor="lastSeenDate"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
-              When Found?
+              When Found??
             </label>
             <input
               name="lastSeenDate"
@@ -180,7 +180,7 @@ const ReportMissing = () => {
               htmlFor="lastLocation"
               className="block mb-2 text-xl font-medium text-gray-900 dark:text-black"
             >
-              Last Known Location
+              Where Found??
             </label>
             <input
               name="lastLocation"
