@@ -56,6 +56,42 @@ router.get("/forgot-password", (req, res) => {
   res.send("Forgot Password");
 });
 
+// Update user profile
+router.post("/update-profile/:id", async (req, res) => {
+  const { username, email, firstName, lastName, address, country, streetAddress, city, state, postalCode } = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        username,
+        email,
+        firstName,
+        lastName,
+        address,
+        country,
+        streetAddress,
+        city,
+        state,
+        postalCode,
+      },
+      { new: true, runValidators: true } // `new` returns the updated document, `runValidators` applies the schema validators
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "User updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+  
+
+
+
 router.get("/reset-password", (req, res) => {
   res.send("Reset Password");
 });

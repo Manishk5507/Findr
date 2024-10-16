@@ -1,12 +1,51 @@
 // import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { useState, useRef } from "react";
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile() {
   const [photo, setPhoto] = useState("https://via.placeholder.com/150"); // Replace with the initial image URL
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    country: "",
+    streetAddress: "",
+    city: "",
+    state: "",
+    postalCode: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        country: user.country || "",
+        address: user.address || "",
+        streetAddress: user.streetAddress || "",
+        city: user.city || "",
+        state: user.state || "",
+        postalCode: user.postalCode || "",
+      });
+    }
+  }, [user]);
+
+  // Function to handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   // Function to handle file selection
   const handleFileChange = (event) => {
@@ -24,10 +63,57 @@ export default function Profile() {
   const triggerFileInput = () => {
     fileInputRef.current.click();
   };
+
+  const handleCancelClick = () => {
+    navigate("/");
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/update-profile/${
+          user.userId
+        }`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser((prevUser) => ({ ...prevUser, ...data.user })); // Update user context
+        toast.success("User Profile Updated successfully!", {
+          position: "bottom-right",
+          autoClose: 1000,
+        }); // Display success message
+        setTimeout(() => navigate("/"), 1300);
+      } else {
+        toast.error("Failed to update profile", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error(error.message || "Internal error occured", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
   return (
     <div className="p-8">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="space-y-12">
+          <ToastContainer /> {/* Include ToastContainer */}
           <div className="border-b border-gray-900/10 pb-12">
             {/* <h2 className="text-base font-semibold leading-7 text-gray-900">
               Profile
@@ -35,7 +121,6 @@ export default function Profile() {
             <p className="mt-1 text-sm leading-6 text-gray-600">
               This information will be used when you volunteer.
             </p> */}
-
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <label
@@ -51,7 +136,7 @@ export default function Profile() {
                       name="username"
                       type="text"
                       placeholder="Your Username"
-                      value={user===null ? "NA" : user.username}
+                      value={user === null ? "NA" : user.username}
                       readOnly
                       className="block flex-1 border-0 bg-transparent py-1.5 px-2 text-gray-900 focus:ring-0 sm:text-sm sm:leading-6 "
                     />
@@ -72,7 +157,7 @@ export default function Profile() {
                       name="email"
                       type="text"
                       placeholder="Your Email"
-                      value={user===null ? "NA" : user.email}
+                      value={user === null ? "NA" : user.email}
                       readOnly
                       className="block border-none flex-1 border-0 bg-transparent py-1.5 px-2 sm:text-sm sm:leading-6"
                     />
@@ -113,7 +198,6 @@ export default function Profile() {
                 </div>
               </div>
 
-
               {/* <div className="col-span-full">
               <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
                 Photo
@@ -152,7 +236,6 @@ export default function Profile() {
             </div> */}
             </div>
           </div>
-
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
               Personal Information
@@ -172,10 +255,11 @@ export default function Profile() {
                 <div className="mt-2">
                   <input
                     id="first-name"
-                    name="first-name"
+                    name="firstName"
                     type="text"
-                    autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -190,28 +274,30 @@ export default function Profile() {
                 <div className="mt-2">
                   <input
                     id="last-name"
-                    name="last-name"
+                    name="lastName"
                     type="text"
-                    autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-4">
                 <label
-                  htmlFor="email"
+                  htmlFor="address"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Email address
+                  Address
                 </label>
                 <div className="mt-2">
                   <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    id="address"
+                    name="address"
+                    type="text"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -227,8 +313,9 @@ export default function Profile() {
                   <select
                     id="country"
                     name="country"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                    value={formData.country}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   >
                     <option>India</option>
                     <option>United States</option>
@@ -252,10 +339,11 @@ export default function Profile() {
                 <div className="mt-2">
                   <input
                     id="street-address"
-                    name="street-address"
+                    name="streetAddress"
                     type="text"
-                    autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.streetAddress}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -272,8 +360,9 @@ export default function Profile() {
                     id="city"
                     name="city"
                     type="text"
-                    autoComplete="address-level2"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -287,11 +376,12 @@ export default function Profile() {
                 </label>
                 <div className="mt-2">
                   <input
-                    id="region"
-                    name="region"
+                    id="state"
+                    name="state"
                     type="text"
-                    autoComplete="address-level1"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.state}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -306,16 +396,16 @@ export default function Profile() {
                 <div className="mt-2">
                   <input
                     id="postal-code"
-                    name="postal-code"
+                    name="postalCode"
                     type="text"
-                    autoComplete="postal-code"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={formData.postalCode}
+                    onChange={handleChange}
+                    className="block px-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
             </div>
           </div>
-
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
               Notifications
@@ -325,15 +415,17 @@ export default function Profile() {
               matched someone changes.
             </p>
 
-            <div className="mt-4 space-y-10">
+            {/* <div className="mt-4 space-y-10">
               <fieldset>
                 <div className="mt-6 space-y-6">
                   <div className="relative flex gap-x-3">
                     <div className="flex h-6 items-center">
                       <input
-                        id="comments"
-                        name="comments"
+                        id="notification"
+                        name="notification"
                         type="checkbox"
+                        value={formData.country}
+                        onChange={handleChange}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                       />
                     </div>
@@ -351,13 +443,14 @@ export default function Profile() {
                   </div>
                 </div>
               </fieldset>
-            </div>
+            </div> */}
           </div>
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
             type="button"
+            onClick={handleCancelClick}
             className="text-sm font-semibold leading-6 text-gray-900"
           >
             Cancel
